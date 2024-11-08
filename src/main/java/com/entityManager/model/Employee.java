@@ -13,11 +13,11 @@ import jakarta.persistence.Table;
 public class Employee {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	
 	private Long id;
-	@Column(name = "emp_name")
 	
+	@Column(name = "emp_name")
 	private String name;
+	
 	@Column(name = "emp_position")
 	private String position;
 	
