@@ -1,17 +1,25 @@
 package com.entityManager.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.entityManager.model.Employee;
-import com.entityManager.repo.EmployeeRepo;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 
 @Service
 public class EmployeeService {
-	@Autowired
-	private EmployeeRepo employeeRepo;
+	@PersistenceContext
+	EntityManager entityManager;
 	
-	public void saveEmployee(Employee employee) {
-		employeeRepo.save(employee);
+	//Get all employees
+	public List<Employee> getAllEmployees(){
+		TypedQuery<Employee> typedQuery= entityManager.createQuery("SELECT e FROM Employee e", Employee.class);
+		return typedQuery.getResultList();
 	}
+	
+	
 }
