@@ -19,4 +19,5 @@ public class EmployeeController {
 		model.addAttribute("listofemployees", employeeService.getAllEmployees());
 		return "listEmployees";
 	}
+	// Get an employee by ID, wrapped in Optional by mubashar
 }
