@@ -20,6 +20,26 @@ public class EmployeeService {
 		TypedQuery<Employee> typedQuery= entityManager.createQuery("SELECT e FROM Employee e", Employee.class);
 		return typedQuery.getResultList();
 	}
+	// Get an employee by ID
+	public Employee getEmployeeById(Long id) {
+		return entityManager.find(Employee.class, id);
+	}
+	//save or update an employee
+	public void saveEmployee(Employee employee) {
+		if(employee == null) {
+			entityManager.persist(employee);//create a new emp
+		}else {
+			entityManager.merge(employee);//update an existing emp
+		}
+	}
+	//delete an emp
+	public void deleteEmployee(Long id) {
+		Employee employee = getEmployeeById(id);
+		if( employee != null) {
+			entityManager.remove(employee);
+		}
+		
+	}
 	
 	
 }

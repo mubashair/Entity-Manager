@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.entityManager.service.EmployeeService;
 
+import jakarta.persistence.EntityManager;
+
 @Controller
 @RequestMapping("/employees")
 public class EmployeeController {
@@ -19,5 +21,8 @@ public class EmployeeController {
 		model.addAttribute("listofemployees", employeeService.getAllEmployees());
 		return "listEmployees";
 	}
-	// Get an employee by ID, wrapped in Optional by mubashar
+	// Get an employee by ID
+	public Employee getEmployeeById() {
+		
+	}
 }
