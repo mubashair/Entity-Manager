@@ -1,14 +1,19 @@
 package com.entityManager.EmployeeController;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.entityManager.exception.EmployeeNotFoundException;
 import com.entityManager.model.Employee;
 import com.entityManager.service.EmployeeService;
 
@@ -39,9 +44,16 @@ public class EmployeeController {
 	//Display the form to edit an existing employee
 	@GetMapping("/edit/{id}")
 	public String editEmployeeForm(@PathVariable("id") Long id, Model model) {
-		model.addAttribute("emp", employeeService.getEmployeeById(id));
+		Optional<Employee> employee= employeeService.getEmployeeById(id);
+		if(employee.isPresent()) {
+			model.addAttribute("emp", employee.get());
+			return "employee_form";
+		}else {
+			throw new EmployeeNotFoundException(id);
+		}
 		
-		return "employee_form";
+		
+		
 		
 	}
 	//Handle employee deletion
@@ -49,6 +61,12 @@ public class EmployeeController {
 	public String deleteEmployee(@PathVariable("id") Long id) {
 		employeeService.deleteEmployee(id);
 		return "redirect:/employees";
+	}
+	//Exception Hander for EmployeeNotFoundException
+	@ExceptionHandler(EmployeeNotFoundException.class)
+	public String handleEmployeeNotFoundException(EmployeeNotFoundException employeeNotFoundException, Model model) {
+		model.addAttribute("errorMessage", employeeNotFoundException.getMessage());
+		return "error";
 	}
 	
 }

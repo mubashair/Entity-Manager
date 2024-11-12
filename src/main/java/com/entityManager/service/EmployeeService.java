@@ -1,9 +1,11 @@
 package com.entityManager.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.entityManager.exception.EmployeeNotFoundException;
 import com.entityManager.model.Employee;
 
 import jakarta.persistence.EntityManager;
@@ -21,9 +23,9 @@ public class EmployeeService {
 		TypedQuery<Employee> typedQuery= entityManager.createQuery("SELECT e FROM Employee e", Employee.class);
 		return typedQuery.getResultList();
 	}
-	// Get an employee by ID
-	public Employee getEmployeeById(Long id) {
-		return entityManager.find(Employee.class, id);
+	// Get an employee by ID throwing an exception if employee is not found
+	public Optional<Employee> getEmployeeById(Long id) {
+		return Optional.ofNullable(entityManager.find(Employee.class, id));
 	}
 	//save or update an employee
 	@Transactional
@@ -37,7 +39,7 @@ public class EmployeeService {
 	//delete an emp
 	@Transactional
 	public void deleteEmployee(Long id) {
-		Employee employee = getEmployeeById(id);
+		Employee employee = entityManager.find(Employee.class, id);
 		if( employee != null) {
 			entityManager.remove(employee);
 		}
