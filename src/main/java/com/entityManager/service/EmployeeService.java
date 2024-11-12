@@ -35,6 +35,7 @@ public class EmployeeService {
 		}
 	}
 	//delete an emp
+	@Transactional
 	public void deleteEmployee(Long id) {
 		Employee employee = getEmployeeById(id);
 		if( employee != null) {
