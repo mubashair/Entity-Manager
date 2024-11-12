@@ -9,6 +9,7 @@ import com.entityManager.model.Employee;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 
 @Service
 public class EmployeeService {
@@ -25,6 +26,7 @@ public class EmployeeService {
 		return entityManager.find(Employee.class, id);
 	}
 	//save or update an employee
+	@Transactional
 	public void saveEmployee(Employee employee) {
 		if(employee == null) {
 			entityManager.persist(employee);//create a new emp
