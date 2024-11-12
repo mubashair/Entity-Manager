@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Add Customer</title>
+    <title>Add Employee</title>
 </head>
 <body>
     <h1>Employee Form</h1>
-    <form th:action="@{/employees}" th:object="${employee}" method="post">
+    <form th:action="@{/employees}" th:object="${emp}" method="post">
 		<input type="hidden" th:field="*{id}" />
         <label>Name: </label>
             <input type="text" th:field="*{name}" required /><br/>
