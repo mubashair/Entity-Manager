@@ -38,7 +38,7 @@ public class EmployeeService {
 	}
 	//delete an emp
 	@Transactional
-	public void deleteEmployee(Long id) {
+	public void deleteEmployeeById(Long id) {
 		Employee employee = entityManager.find(Employee.class, id);
 		if( employee != null) {
 			entityManager.remove(employee);

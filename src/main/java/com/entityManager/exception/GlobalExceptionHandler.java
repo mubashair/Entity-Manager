@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 	@ExceptionHandler(EmployeeNotFoundException.class)
-	public String resourceNotFoundException(EmployeeNotFoundException employeeNotFoundException, Model model) {
+	public String employeeNotFoundException(EmployeeNotFoundException employeeNotFoundException, Model model) {
 		model.addAttribute("errorMessage", employeeNotFoundException.getMessage());
 		return "error";
 	}

@@ -3,7 +3,6 @@ package com.entityManager.EmployeeController;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -57,12 +56,19 @@ public class EmployeeController {
 		
 	}
 	//Handle employee deletion
-	@GetMapping("delete/{id}")
+	@GetMapping("/delete/{id}")
 	public String deleteEmployee(@PathVariable("id") Long id) {
-		employeeService.deleteEmployee(id);
-		return "redirect:/employees";
+		Optional<Employee> employee = employeeService.getEmployeeById(id);
+		if(employee.isPresent()) {
+			employeeService.deleteEmployeeById(id);
+			return "redirect:/employees";
+		}else {
+			throw new EmployeeNotFoundException(id);
+		}
+		
+		
 	}
-	//Exception Hander for EmployeeNotFoundException
+	//Exception Handler for EmployeeNotFoundException
 	@ExceptionHandler(EmployeeNotFoundException.class)
 	public String handleEmployeeNotFoundException(EmployeeNotFoundException employeeNotFoundException, Model model) {
 		model.addAttribute("errorMessage", employeeNotFoundException.getMessage());
