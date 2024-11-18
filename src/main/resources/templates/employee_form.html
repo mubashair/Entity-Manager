@@ -12,6 +12,7 @@
 
 	<form th:action="@{/employees}" th:object="${emp}" method="post">
 		<div class="form-group">
+			<input type="hidden" name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 			<input type="hidden" th:field="*{id}" />
 			<label>Name: </label>
 			<input type="text" class="form-control" th:field="*{name}" required /><br />
