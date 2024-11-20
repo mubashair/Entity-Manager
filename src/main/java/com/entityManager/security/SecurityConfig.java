@@ -89,6 +89,10 @@ public class SecurityConfig {
                 adminUser.setRole(ROLE_ADMIN);
                 
                 userRepository.save(adminUser);
+                if (System.getenv("ADMIN_PASSWORD") == null) {
+                    logger.warn("ADMIN_PASSWORD environment variable not set. Using default password.");
+                }
+
                 logger.info("Admin user created: username='admin', password='adminpassword'");
             }
         };
