@@ -24,7 +24,7 @@ public class EmployeeController {
 	//Display the list of employees
 	@GetMapping
 	public String listEmployees(Model model) {
-		model.addAttribute("listofemployees", employeeService.getAllEmployees());
+		model.addAttribute("listofemployees", employeeService.getAllEmployees());//Fetch employees
 		return "listEmployees";
 	}
 	// Display the form to create a new employee
