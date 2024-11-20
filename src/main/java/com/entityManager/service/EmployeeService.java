@@ -32,7 +32,7 @@ public class EmployeeService {
 	public void saveEmployee(Employee employee) {
 		if(employee == null) {
 			entityManager.persist(employee);//create a new emp
-		}else {
+		}else { 
 			entityManager.merge(employee);//update an existing emp
 		}
 	}
