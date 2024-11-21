@@ -23,13 +23,16 @@ import com.entityManager.repo.UserRepo;
 @Configuration
 public class SecurityConfig {
 	private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
-	
+	//Role constants
 	public static final String ROLE_USER = "USER";
 	public static final String ROLE_ADMIN = "ADMIN";
-	
+	//End points constants
 	private static final String[] PUBLIC_END_POINTS = {"/", "/login", "/error", "/register"};
 	private static final String EMPLOYEES_END_POINTS = "/employees";
 	private static final String[] ADMIN_END_POINTS = {"/employees/new", "/employees/edit/**", "/employees/delete/**"};
+	//Default admin credentials
+	private static final String DEFAULT_ADMIN_USERNAME = "admin";
+	private static final String DEFAULT_ADMIN_PASSWORD = "mub()123";
 	
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -64,8 +67,10 @@ public class SecurityConfig {
     		User user  = userRepo.findByUsername(username);
     		
     		if(user == null) {
-    			throw  new UsernameNotFoundException("User Not Found");
+    			logger.error("User '{}' not found in database", username);
+    			throw  new UsernameNotFoundException("User " + username +"Not Found");
     		}
+    		logger.info("username '{}' authenticated successfully", username);
     		return new org.springframework.security.core.userdetails.User(
     				user.getUsername(), 
     				user.getPassword(), 
@@ -81,24 +86,27 @@ public class SecurityConfig {
     public CommandLineRunner initAdminUser(UserRepo userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
         	//Defining the default password
-        	String defaultAdminPassword = "mub";
+        	//String defaultAdminPassword = "mub";
         	String adminPassword = System.getenv("ADMIN_PASSWORD");
-        	if(adminPassword == null) {
-        		adminPassword = defaultAdminPassword;
-        		logger.warn("ADMIN_PASSWORD environment variable not set. Using default password.");
+        	if(adminPassword == null || adminPassword.isBlank()) {
+        		adminPassword = DEFAULT_ADMIN_PASSWORD;
+        		logger.warn("ADMIN_PASSWORD environment variable not set or empty. Using default password.");
         	}
             // Check if admin already exists
-            if (userRepository.findByUsername("admin") == null) {
+            if (userRepository.findByUsername(DEFAULT_ADMIN_USERNAME) == null) {
                 // Create admin user
                 User adminUser = new User();
-                adminUser.setUsername("admin");
+                adminUser.setUsername(DEFAULT_ADMIN_USERNAME);
                 //adminUser.setPassword(passwordEncoder.encode(System.getenv("ADMIN_PASSWORD") != null ? System.getenv("ADMIN_PASSWORD") : "adminpass")); // Set a secure password
                 adminUser.setPassword(passwordEncoder.encode(adminPassword));
                 adminUser.setRole(ROLE_ADMIN);
                 
                 userRepository.save(adminUser);
-                logger.info("Admin user created: username='admin', password='{}'", adminPassword.equals(defaultAdminPassword) ? defaultAdminPassword : "[ENVIRONMENT PASSWORD]");
+                logger.info("Admin user created: username='{}', password='{}'", DEFAULT_ADMIN_USERNAME,
+                		adminPassword.equals(DEFAULT_ADMIN_PASSWORD) ? "[DEFAULT PASSWORD]" : "[ENVIRONMENT PASSWORD]");
 
+            }else {
+            	logger.info("Admin user '{}' already exist already exist in database", DEFAULT_ADMIN_USERNAME);
             }
         };
     }
