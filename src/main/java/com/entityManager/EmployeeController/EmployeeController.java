@@ -2,10 +2,10 @@ package com.entityManager.EmployeeController;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,14 +16,24 @@ import com.entityManager.exception.EmployeeNotFoundException;
 import com.entityManager.model.Employee;
 import com.entityManager.service.EmployeeService;
 
+import jakarta.validation.Valid;
+
 @Controller
 @RequestMapping("/employees")
 public class EmployeeController {
-	@Autowired
+	//Incorporate logging to help debug issues and trace operations. Use the Logger from SLF4J for this purpose
+	private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
+	//Switch to constructor-based dependency injection to make the controller easier to test and 
+	//avoid potential issues with uninitialized beans.
 	private EmployeeService employeeService;
+	public EmployeeController(EmployeeService employeeService) {
+		this.employeeService = employeeService;
+	}
+	
 	//Display the list of employees
 	@GetMapping
 	public String listEmployees(Model model) {
+		logger.info("Fetching all employees");
 		model.addAttribute("listofemployees", employeeService.getAllEmployees());//Fetch employees
 		return "listEmployees";
 	}
@@ -35,7 +45,7 @@ public class EmployeeController {
 	}
 	//Handle form submission for creating or updating an employee
 	@PostMapping
-	public String saveEmployee(@ModelAttribute("employee") Employee employee) {
+	public String saveEmployee(@ModelAttribute("employee") @Valid Employee employee) {
 		employeeService.saveEmployee(employee);
 		return "redirect:/employees";
 		
@@ -43,11 +53,13 @@ public class EmployeeController {
 	//Display the form to edit an existing employee
 	@GetMapping("/edit/{id}")
 	public String editEmployeeForm(@PathVariable("id") Long id, Model model) {
+		logger.info("Fetching employee with ID: {}", id);
 		Optional<Employee> employee= employeeService.getEmployeeById(id);
 		if(employee.isPresent()) {
 			model.addAttribute("emp", employee.get());
 			return "employee_form";
 		}else {
+			logger.error("Employee with ID {} not found", id);
 			throw new EmployeeNotFoundException(id);
 		}
 		
@@ -67,12 +79,6 @@ public class EmployeeController {
 		}
 		
 		
-	}
-	//Exception Handler for EmployeeNotFoundException
-	@ExceptionHandler(EmployeeNotFoundException.class)
-	public String handleEmployeeNotFoundException(EmployeeNotFoundException employeeNotFoundException, Model model) {
-		model.addAttribute("errorMessage", employeeNotFoundException.getMessage());
-		return "error";
 	}
 	
 }

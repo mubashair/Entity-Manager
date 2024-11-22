@@ -1,5 +1,7 @@
 package com.entityManager.exception;
 
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,7 +28,7 @@ public class GlobalExceptionHandler {
 		model.addAttribute("error", "User Not Found!");
 		model.addAttribute("message", exception.getMessage());
 		model.addAttribute("details", request.getDescription(false));
-		model.addAttribute("timestamp", System.currentTimeMillis());
+		model.addAttribute("timestamp", LocalDateTime.now());
 		return "error";//Thymeleaf template name
 	}
 	//For unhandled exceptions, forward users to the same error page.
@@ -36,7 +38,7 @@ public class GlobalExceptionHandler {
 	    model.addAttribute("error", "Internal server error");
 	    model.addAttribute("message", "An unexpected error occurred");
 	    model.addAttribute("details", request.getDescription(false));
-	    model.addAttribute("timestamp", System.currentTimeMillis());
+	    model.addAttribute("timestamp", LocalDateTime.now());
 	    return "error"; // Thymeleaf template name
 	}
 

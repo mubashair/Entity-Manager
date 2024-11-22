@@ -1,14 +1,77 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>Error</title>
+	<title>Error Page</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #f4f4f9;
+		}
+
+		.container {
+			max-width: 800px;
+			margin: 50px auto;
+			padding: 20px;
+			background-color: white;
+			border-radius: 5px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
+
+		h1 {
+			color: #ff4f5a;
+		}
+
+		p {
+			font-size: 16px;
+			color: #333;
+		}
+
+		.timestamp,
+		.details {
+			font-size: 14px;
+			color: #666;
+		}
+
+		.back-link {
+			margin-top: 20px;
+			display: inline-block;
+			padding: 10px 15px;
+			background-color: #007bff;
+			color: white;
+			text-decoration: none;
+			border-radius: 3px;
+		}
+
+		.back-link:hover {
+			background-color: #0056b3;
+		}
+	</style>
 </head>
+
 <body>
-    <h1>Error Page</h1>
-    <p><strong>Error:</strong> <span th:text="${error}"></span></p>
-    <p><strong>Message:</strong> <span th:text="${message}"></span></p>
-    <p><strong>Details:</strong> <span th:text="${details}"></span></p>
-    <p><strong>Timestamp:</strong> <span th:text="${#dates.format(#dates.create(${timestamp}), 'yyyy-MM-dd HH:mm:ss')}"></span></p>
-    <a th:href="@{/login}">Go Back to Home</a>
+	<div class="container">
+		<h1 th:text="${error ?: 'Error'}">Error</h1>
+		<h1>Resource Not Found</h1>
+		<p>The resource you requested does not exist.</p>
+
+		<p th:text="${message ?: 'An unexpected error occurred. Please try again later.'}">An error message goes here.
+		</p>
+
+		<div class="timestamp">
+			<strong>Timestamp:</strong>
+			<span th:text="${timestamp}">[Timestamp]</span>
+		</div>
+
+		<div class="details">
+			<strong>Details:</strong>
+			<span th:text="${details ?: 'No additional details available.'}">[Details]</span>
+		</div>
+
+		<a href="/login" class="back-link">Go Back to Home</a>
+	</div>
 </body>
+
 </html>
