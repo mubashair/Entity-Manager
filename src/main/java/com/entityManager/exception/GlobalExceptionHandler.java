@@ -29,4 +29,15 @@ public class GlobalExceptionHandler {
 		model.addAttribute("timestamp", System.currentTimeMillis());
 		return "error";//Thymeleaf template name
 	}
+	//For unhandled exceptions, forward users to the same error page.
+	@ExceptionHandler(Exception.class)
+	public String handleGlobalException(Exception ex, WebRequest request, Model model) {
+	    logger.error("Unexpected error occurred: {}", ex.getMessage(), ex);
+	    model.addAttribute("error", "Internal server error");
+	    model.addAttribute("message", "An unexpected error occurred");
+	    model.addAttribute("details", request.getDescription(false));
+	    model.addAttribute("timestamp", System.currentTimeMillis());
+	    return "error"; // Thymeleaf template name
+	}
+
 }
